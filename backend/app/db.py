@@ -11,16 +11,20 @@ from .config import settings
 
 
 def make_engine(url: str):
-    connect_args = {"check_same_thread": False} if url.startswith("sqlite") else {}
-    engine = create_engine(url, connect_args=connect_args)
-    if url.startswith("sqlite"):
+    if not url.startswith("sqlite"):
+        # Hosted Postgres behind a transaction pooler (Neon): no server-side prepared statements,
+        # and re-check pooled connections that a frozen serverless instance may have lost.
+        return create_engine(
+            url, pool_pre_ping=True, pool_size=2, max_overflow=3, pool_recycle=300, connect_args={"prepare_threshold": None}
+        )
+    engine = create_engine(url, connect_args={"check_same_thread": False})
 
-        @event.listens_for(engine, "connect")
-        def _sqlite_pragmas(dbapi_conn, _record):  # pragma: no cover - driver hook
-            cur = dbapi_conn.cursor()
-            cur.execute("PRAGMA foreign_keys=ON")
-            cur.execute("PRAGMA journal_mode=WAL")
-            cur.close()
+    @event.listens_for(engine, "connect")
+    def _sqlite_pragmas(dbapi_conn, _record):  # pragma: no cover - driver hook
+        cur = dbapi_conn.cursor()
+        cur.execute("PRAGMA foreign_keys=ON")
+        cur.execute("PRAGMA journal_mode=WAL")
+        cur.close()
 
     return engine
 

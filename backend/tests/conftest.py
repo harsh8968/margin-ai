@@ -2,8 +2,9 @@ import os
 import tempfile
 
 # Point the app at a throwaway database before any app module is imported.
+# TEST_DATABASE_URL runs the suite on another engine (e.g. an empty Postgres); tests drop its tables.
 _TMP = tempfile.mkdtemp(prefix="canvas-tests-")
-os.environ["DATABASE_URL"] = f"sqlite:///{_TMP}/test.db"
+os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL") or f"sqlite:///{_TMP}/test.db"
 os.environ["LLM_PROVIDER"] = "mock"
 
 import base64  # noqa: E402

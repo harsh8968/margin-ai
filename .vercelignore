@@ -1,0 +1,15 @@
+# Never upload local secrets or the local notes database.
+backend/.env
+backend/data
+.env*
+# Local tooling and build output (Vercel installs and builds itself).
+**/.venv
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+frontend/dist
+.superpowers
+.git
+demo
+docs

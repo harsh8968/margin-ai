@@ -26,9 +26,22 @@ class Settings:
     voice_name: str
 
 
-def load_settings() -> Settings:
+def normalize_database_url(url: str) -> str:
+    """Hosted Postgres (Neon, Vercel) hands out postgres:// URLs; SQLAlchemy needs the driver named."""
+    for prefix in ("postgres://", "postgresql://"):
+        if url.startswith(prefix):
+            return "postgresql+psycopg://" + url[len(prefix) :]
+    return url
+
+
+def default_database_url() -> str:
+    # Only the local SQLite file needs a folder; serverless file systems are read-only.
     data_dir = BACKEND_DIR / "data"
     data_dir.mkdir(exist_ok=True)
+    return f"sqlite:///{(data_dir / 'canvas.db').as_posix()}"
+
+
+def load_settings() -> Settings:
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
     provider = os.getenv("LLM_PROVIDER", "gemini").strip().lower()
     return Settings(
@@ -36,7 +49,7 @@ def load_settings() -> Settings:
         gemini_model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash").strip(),
         gemini_fallback_model=os.getenv("GEMINI_FALLBACK_MODEL", "gemini-3.5-flash-lite").strip(),
         llm_provider=provider,
-        database_url=os.getenv("DATABASE_URL", f"sqlite:///{(data_dir / 'canvas.db').as_posix()}"),
+        database_url=normalize_database_url(os.getenv("DATABASE_URL", "").strip() or default_database_url()),
         cors_origins=tuple(
             o.strip()
             for o in os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")

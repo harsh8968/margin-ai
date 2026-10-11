@@ -44,7 +44,13 @@ class SlidingWindowLimiter:
         hits.append(now)
 
 
+def client_key(request: Request) -> str:
+    """The visitor's IP. Behind a host's proxy (Vercel, Fly) every request arrives from the proxy,
+    so prefer the address it forwards; without one, fall back to the socket peer."""
+    forwarded = request.headers.get("x-real-ip") or request.headers.get("x-forwarded-for", "").split(",")[0]
+    return forwarded.strip() or (request.client.host if request.client else "unknown")
+
+
 def ai_rate_limit(request: Request) -> None:
     limiter: SlidingWindowLimiter = request.app.state.ai_limiter
-    client = request.client.host if request.client else "unknown"
-    limiter.check(client)
+    limiter.check(client_key(request))

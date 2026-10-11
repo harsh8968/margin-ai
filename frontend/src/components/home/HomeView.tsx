@@ -1,4 +1,4 @@
-import { BookOpen, MoreHorizontal, Pencil, Plus, Sparkles, Trash2 } from 'lucide-react'
+import { BookOpen, LogOut, MoreHorizontal, Pencil, Plus, Sparkles, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 
@@ -6,6 +6,7 @@ import { api, errorMessage } from '../../api/client'
 import type { Project } from '../../api/types'
 import { spineColor, timeAgo } from '../../lib/format'
 import { navigate } from '../../lib/hooks'
+import { useAuthStore } from '../../store/authStore'
 import { toastError } from '../../store/toastStore'
 import { AiStatus } from '../ai/AiStatus'
 import { importAsNewNotebook } from '../../lib/importActions'
@@ -86,8 +87,9 @@ export function HomeView() {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="mx-auto max-w-6xl px-8 pb-24 pt-14">
-        <header className="grid items-end gap-10 lg:grid-cols-[1.25fr_1fr]">
+      <div className="mx-auto max-w-6xl px-8 pb-24 pt-6">
+        <UserBar />
+        <header className="mt-8 grid items-end gap-10 lg:grid-cols-[1.25fr_1fr]">
           <div className="rise">
             <div className="eyebrow mb-4 flex items-center gap-3">
               <span className="h-px w-8 bg-pen" /> AI study canvas
@@ -187,6 +189,26 @@ export function HomeView() {
           onCancel={() => setDeleting(null)}
         />
       )}
+    </div>
+  )
+}
+
+/** Who is signed in (mock auth) and the way out. */
+function UserBar() {
+  const user = useAuthStore((s) => s.user)
+  const logOut = useAuthStore((s) => s.logOut)
+  if (!user) return null
+  return (
+    <div className="flex items-center justify-end gap-3 text-sm">
+      <span className="grid h-8 w-8 place-items-center rounded-full bg-ink font-display text-sm font-semibold text-paper" aria-hidden>
+        {user.name.charAt(0).toUpperCase()}
+      </span>
+      <span className="text-ink-soft">
+        Hi, <strong className="text-ink">{user.name}</strong>
+      </span>
+      <button className="btn btn-ghost px-2.5 py-1.5 text-xs" onClick={logOut}>
+        <LogOut size={14} /> Log out
+      </button>
     </div>
   )
 }

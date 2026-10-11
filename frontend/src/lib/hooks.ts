@@ -3,14 +3,17 @@ import { useEffect, useState } from 'react'
 import { invalidateTextLayouts } from '../canvas/textLayout'
 import { TEXT_FONT_FAMILY } from '../canvas/types'
 
-export type Route = { name: 'home' } | { name: 'project'; projectId: string }
+export type Route = { name: 'home' } | { name: 'login' } | { name: 'signup' } | { name: 'project'; projectId: string }
 
-function parseHash(hash: string): Route {
+export function parseHash(hash: string): Route {
   const match = /^#\/p\/([\w-]+)/.exec(hash)
-  return match ? { name: 'project', projectId: match[1] } : { name: 'home' }
+  if (match) return { name: 'project', projectId: match[1] }
+  if (/^#\/login\b/.test(hash)) return { name: 'login' }
+  if (/^#\/signup\b/.test(hash)) return { name: 'signup' }
+  return { name: 'home' }
 }
 
-/** Tiny hash router: #/ is the library, #/p/<id> opens a notebook. */
+/** Tiny hash router: #/ is the library, #/p/<id> opens a notebook, #/login and #/signup sign in. */
 export function useHashRoute(): Route {
   const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash))
   useEffect(() => {
@@ -22,7 +25,7 @@ export function useHashRoute(): Route {
 }
 
 export const navigate = (route: Route): void => {
-  window.location.hash = route.name === 'home' ? '#/' : `#/p/${route.projectId}`
+  window.location.hash = route.name === 'project' ? `#/p/${route.projectId}` : route.name === 'home' ? '#/' : `#/${route.name}`
 }
 
 let fontsPromise: Promise<void> | null = null

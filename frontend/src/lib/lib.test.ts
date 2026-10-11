@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { makeTextBlock } from '../canvas/engine'
 import { PAGE_HEIGHT, PAGE_MARGIN_TOP } from '../canvas/types'
 import { pagesFor, paginate, placeBelow } from './insert'
+import { parseHash } from './hooks'
 import { linkifyPageRefs, markdownToPlain } from './markdown'
 
 const measure = (text: string, size: number) => text.length * size * 0.5
@@ -63,5 +64,15 @@ describe('parseServerDate', () => {
     expect(parseServerDate('2026-10-11T10:00:00+00:00')).toBe(expected)
     expect(parseServerDate('2026-10-11T10:00:00')).toBe(expected)
     expect(parseServerDate('2026-10-11T15:30:00+05:30')).toBe(expected)
+  })
+})
+
+describe('parseHash', () => {
+  it('routes the library, notebooks and the sign-in screens', () => {
+    expect(parseHash('')).toEqual({ name: 'home' })
+    expect(parseHash('#/')).toEqual({ name: 'home' })
+    expect(parseHash('#/p/abc123')).toEqual({ name: 'project', projectId: 'abc123' })
+    expect(parseHash('#/login')).toEqual({ name: 'login' })
+    expect(parseHash('#/signup')).toEqual({ name: 'signup' })
   })
 })

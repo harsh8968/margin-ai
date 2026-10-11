@@ -7,6 +7,7 @@
 @theme {
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-sans: 'Atkinson Hyperlegible Next', 'Segoe UI', system-ui, sans-serif;
+  --font-hand: 'Kalam', 'Segoe Print', cursive;
 
   --color-desk: #ebe4d6;
   --color-desk-deep: #ddd3bf;
@@ -354,4 +355,18 @@
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+}
+
+/* The wordmark's red-pen underline, drawn in on the sign-in screen (pathLength="1"). */
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.draw-in {
+  stroke-dasharray: 1;
+  animation: draw 900ms 200ms var(--ease-out-expo) both;
 }

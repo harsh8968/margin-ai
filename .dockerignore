@@ -1,0 +1,13 @@
+**/node_modules
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/*.log
+backend/data
+backend/.env
+frontend/dist
+.git
+.superpowers
+docs
+demo

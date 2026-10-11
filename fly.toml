@@ -1,0 +1,37 @@
+# Fly.io: one machine in Mumbai with a persistent disk for the SQLite notes database.
+app = "margin-ai"
+primary_region = "bom"
+
+[build]
+
+[env]
+  DATABASE_URL = "sqlite:////data/canvas.db"
+  LLM_PROVIDER = "gemini"
+  GEMINI_MODEL = "gemini-3.8-flash"
+  GEMINI_FALLBACK_MODEL = "gemini-3.5-flash-lite"
+  VOICE_MODEL = "gemini-3.8-live"
+  VOICE_NAME = "Kore"
+  # GEMINI_API_KEY is a secret: fly secrets set GEMINI_API_KEY=... --app margin-ai
+
+[[mounts]]
+  source = "margin_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"   # sleeps when idle; wakes on the next request in a second or two
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "15s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "5s"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

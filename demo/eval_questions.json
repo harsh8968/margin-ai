@@ -1,0 +1,28 @@
+{
+  "about": "Grounding eval for the seed notebook 'DBMS - Normalization' (PS6 doc section 19.2). Page numbers refer to the seed's original order: 1 Introduction, 2 1NF and 2NF, 3 3NF, 4 Functional dependencies, 5 Worked example, 6 Exam answer draft. BCNF, 4NF, joins, denormalisation and history are deliberately NOT in the notes.",
+  "questions": [
+    {"bucket": "single_page", "question": "What is normalization?", "expected": "grounded", "pages": [1, 6]},
+    {"bucket": "single_page", "question": "What is an update anomaly?", "expected": "grounded", "pages": [1, 6]},
+    {"bucket": "single_page", "question": "What does 1NF require?", "expected": "grounded", "pages": [2]},
+    {"bucket": "single_page", "question": "What is a partial dependency?", "expected": "grounded", "pages": [2, 5]},
+    {"bucket": "single_page", "question": "What is a transitive dependency?", "expected": "grounded", "pages": [3, 5]},
+    {"bucket": "single_page", "question": "How do you fix a transitive dependency?", "expected": "grounded", "pages": [3]},
+    {"bucket": "single_page", "question": "What does the functional dependency X -> Y mean?", "expected": "grounded", "pages": [4]},
+    {"bucket": "single_page", "question": "What is the key of the Student table in the worked example?", "expected": "grounded", "pages": [5]},
+
+    {"bucket": "multi_page", "question": "How does 3NF differ from 2NF?", "expected": "grounded", "pages": [2, 3]},
+    {"bucket": "multi_page", "question": "Why does the Student table violate 2NF and 3NF?", "expected": "grounded", "pages": [2, 3, 5]},
+    {"bucket": "multi_page", "question": "Which normal forms are covered and what does each one add?", "expected": "grounded", "pages": [1, 2, 3]},
+    {"bucket": "multi_page", "question": "Using the RollNo example, which dependencies exist and which normal form problems do they cause?", "expected": "grounded", "pages": [4, 5, 2, 3]},
+
+    {"bucket": "partial", "question": "What is 2NF and how does it compare to BCNF?", "expected": "partial", "pages": [2]},
+    {"bucket": "partial", "question": "Define 1NF, 2NF, 3NF and 4NF.", "expected": "partial", "pages": [2, 3]},
+    {"bucket": "partial", "question": "What are the advantages and the disadvantages of normalization?", "expected": "partial", "pages": [1, 6]},
+    {"bucket": "partial", "question": "What is a transitive dependency, and what is a multivalued dependency?", "expected": "partial", "pages": [3]},
+
+    {"bucket": "not_in_notes", "question": "What is BCNF?", "expected": "not_in_notes", "pages": []},
+    {"bucket": "not_in_notes", "question": "Explain the different types of SQL JOIN.", "expected": "not_in_notes", "pages": []},
+    {"bucket": "not_in_notes", "question": "What is denormalization and when should it be used?", "expected": "not_in_notes", "pages": []},
+    {"bucket": "not_in_notes", "question": "Who invented the relational model, and in which year?", "expected": "not_in_notes", "pages": []}
+  ]
+}
